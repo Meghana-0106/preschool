@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProgramsLkgRouteImport } from './routes/programs/lkg'
+import { Route as ProgramsNurseryRouteImport } from './routes/programs/nursery'
+import { Route as ProgramsPlayGroupRouteImport } from './routes/programs/play-group'
+import { Route as ProgramsUkgRouteImport } from './routes/programs/ukg'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgramsLkgRoute = ProgramsLkgRouteImport.update({
+  id: '/programs/lkg',
+  path: '/programs/lkg',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramsNurseryRoute = ProgramsNurseryRouteImport.update({
+  id: '/programs/nursery',
+  path: '/programs/nursery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramsPlayGroupRoute = ProgramsPlayGroupRouteImport.update({
+  id: '/programs/play-group',
+  path: '/programs/play-group',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramsUkgRoute = ProgramsUkgRouteImport.update({
+  id: '/programs/ukg',
+  path: '/programs/ukg',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/programs/lkg': typeof ProgramsLkgRoute
+  '/programs/nursery': typeof ProgramsNurseryRoute
+  '/programs/play-group': typeof ProgramsPlayGroupRoute
+  '/programs/ukg': typeof ProgramsUkgRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/programs/lkg': typeof ProgramsLkgRoute
+  '/programs/nursery': typeof ProgramsNurseryRoute
+  '/programs/play-group': typeof ProgramsPlayGroupRoute
+  '/programs/ukg': typeof ProgramsUkgRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/programs/lkg': typeof ProgramsLkgRoute
+  '/programs/nursery': typeof ProgramsNurseryRoute
+  '/programs/play-group': typeof ProgramsPlayGroupRoute
+  '/programs/ukg': typeof ProgramsUkgRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/programs/lkg'
+    | '/programs/nursery'
+    | '/programs/play-group'
+    | '/programs/ukg'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/programs/lkg'
+    | '/programs/nursery'
+    | '/programs/play-group'
+    | '/programs/ukg'
+  id:
+    | '__root__'
+    | '/'
+    | '/programs/lkg'
+    | '/programs/nursery'
+    | '/programs/play-group'
+    | '/programs/ukg'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProgramsLkgRoute: typeof ProgramsLkgRoute
+  ProgramsNurseryRoute: typeof ProgramsNurseryRoute
+  ProgramsPlayGroupRoute: typeof ProgramsPlayGroupRoute
+  ProgramsUkgRoute: typeof ProgramsUkgRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programs/lkg': {
+      id: '/programs/lkg'
+      path: '/programs/lkg'
+      fullPath: '/programs/lkg'
+      preLoaderRoute: typeof ProgramsLkgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programs/nursery': {
+      id: '/programs/nursery'
+      path: '/programs/nursery'
+      fullPath: '/programs/nursery'
+      preLoaderRoute: typeof ProgramsNurseryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programs/play-group': {
+      id: '/programs/play-group'
+      path: '/programs/play-group'
+      fullPath: '/programs/play-group'
+      preLoaderRoute: typeof ProgramsPlayGroupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programs/ukg': {
+      id: '/programs/ukg'
+      path: '/programs/ukg'
+      fullPath: '/programs/ukg'
+      preLoaderRoute: typeof ProgramsUkgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProgramsLkgRoute: ProgramsLkgRoute,
+  ProgramsNurseryRoute: ProgramsNurseryRoute,
+  ProgramsPlayGroupRoute: ProgramsPlayGroupRoute,
+  ProgramsUkgRoute: ProgramsUkgRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
