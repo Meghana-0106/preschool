@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { CONTACT_CONFIG } from "../config/contact";
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import {
   Phone,
@@ -79,8 +80,8 @@ export const Route = createFileRoute("/")({
           name: "LittleSteps Preschool",
           description:
             "Play-based preschool for children aged 2 to 6 with caring teachers and weekend activity club.",
-          telephone: "+91 6361492452",
-          email: "official@mavrostech.in",
+          telephone: CONTACT_CONFIG.PHONE_NUMBER,
+          email: CONTACT_CONFIG.CONTACT_EMAIL,
           address: {
             "@type": "PostalAddress",
             streetAddress: "Bangalore",
@@ -1730,7 +1731,7 @@ function CallToAction({ onBookVisit }: { onBookVisit: () => void }) {
             Book a Visit
           </button>
           <a
-            href="tel:+916361492452"
+            href={`tel:${CONTACT_CONFIG.PHONE_NUMBER.replace(/\s+/g, "")}`}
             className="inline-flex min-h-12 items-center rounded-full border border-border/80 bg-background px-8 text-base font-bold text-ink shadow-sm hover:bg-cream transition-all duration-200"
           >
             Call Us
@@ -1745,9 +1746,9 @@ function CallToAction({ onBookVisit }: { onBookVisit: () => void }) {
 }
 
 const contactDetails = [
-  { icon: Phone, label: "Phone", value: "+91 6361492452" },
-  { icon: Mail, label: "Email", value: "official@mavrostech.in" },
-  { icon: MapPin, label: "Location", value: "Bangalore, Karnataka, India" },
+  { icon: Phone, label: "Phone", value: CONTACT_CONFIG.PHONE_NUMBER },
+  { icon: Mail, label: "Email", value: CONTACT_CONFIG.CONTACT_EMAIL },
+  { icon: MapPin, label: "Location", value: CONTACT_CONFIG.LOCATION },
   { icon: Clock, label: "Opening Hours", value: "Mon–Fri, 8:30 AM – 4:00 PM" },
 ];
 
@@ -1793,11 +1794,33 @@ function Contact() {
     if (!validate()) return;
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSent(true);
-      setForm({ parentName: "", childAge: "", phone: "", email: "", program: "Nursery", message: "" });
-    }, 1200);
+    if (CONTACT_CONFIG.FORM_ENDPOINT) {
+      fetch(CONTACT_CONFIG.FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+        .then((res) => {
+          if (res.ok) {
+            setSent(true);
+            setForm({ parentName: "", childAge: "", phone: "", email: "", program: "Nursery", message: "" });
+          } else {
+            alert("Oops! There was an issue submitting your form. Please try again.");
+          }
+        })
+        .catch(() => {
+          alert("Oops! There was an issue submitting your form. Please try again.");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+        setSent(true);
+        setForm({ parentName: "", childAge: "", phone: "", email: "", program: "Nursery", message: "" });
+      }, 1200);
+    }
   }
 
   return (
@@ -2037,15 +2060,15 @@ export function Footer() {
           <ul className="mt-4 space-y-3.5 text-sm font-semibold text-muted-foreground">
             <li className="flex items-center gap-2">
               <Phone className="size-4 text-primary shrink-0" />
-              <a href="tel:+916361492452" className="hover:text-primary transition-colors">+91 6361492452</a>
+              <a href={`tel:${CONTACT_CONFIG.PHONE_NUMBER.replace(/\s+/g, "")}`} className="hover:text-primary transition-colors">{CONTACT_CONFIG.PHONE_NUMBER}</a>
             </li>
             <li className="flex items-center gap-2">
               <Mail className="size-4 text-primary shrink-0" />
-              <a href="mailto:official@mavrostech.in" className="hover:text-primary transition-colors">official@mavrostech.in</a>
+              <a href={`mailto:${CONTACT_CONFIG.CONTACT_EMAIL}`} className="hover:text-primary transition-colors">{CONTACT_CONFIG.CONTACT_EMAIL}</a>
             </li>
             <li className="flex items-start gap-2">
               <MapPin className="size-4 text-primary shrink-0 mt-0.5" />
-              <a href="https://maps.google.com/?q=Bangalore,+Karnataka,+India" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Bangalore, Karnataka, India</a>
+              <a href={CONTACT_CONFIG.MAPS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">{CONTACT_CONFIG.LOCATION}</a>
             </li>
             <li className="flex items-center gap-2">
               <Clock className="size-4 text-primary shrink-0" /> Mon–Fri, 8:30 AM – 4:00 PM

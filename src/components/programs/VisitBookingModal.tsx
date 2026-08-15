@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { X, Calendar, AlertCircle } from "lucide-react";
+import { CONTACT_CONFIG } from "../../config/contact";
 
 interface FieldProps {
   id: string;
@@ -104,10 +105,31 @@ export function VisitBookingModal({ onClose, defaultProgram = "Nursery" }: { onC
     if (!validate()) return;
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-    }, 1200);
+    if (CONTACT_CONFIG.FORM_ENDPOINT) {
+      fetch(CONTACT_CONFIG.FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+        .then((res) => {
+          if (res.ok) {
+            setSuccess(true);
+          } else {
+            alert("Oops! There was an issue submitting your request. Please try again.");
+          }
+        })
+        .catch(() => {
+          alert("Oops! There was an issue submitting your request. Please try again.");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+        setSuccess(true);
+      }, 1200);
+    }
   };
 
   return (
@@ -173,7 +195,7 @@ export function VisitBookingModal({ onClose, defaultProgram = "Nursery" }: { onC
                 name="phone"
                 label="Phone Number"
                 type="tel"
-                placeholder="+91 6361492452"
+                placeholder={CONTACT_CONFIG.PHONE_NUMBER}
                 value={form.phone}
                 onChange={handleInputChange}
                 error={errors["phone"]}
