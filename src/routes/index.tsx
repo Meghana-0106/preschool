@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 
 import { Reveal } from "@/components/reveal";
+import { Carousel } from "@/components/ui/carousel";
 import { SiteNav } from "@/components/site-nav";
 import { VisitBookingModal, Field } from "@/components/programs/VisitBookingModal";
 import heroImg from "@/assets/hero-classroom.jpg";
@@ -733,7 +734,8 @@ function ProgramsSection() {
           text="Small groups, familiar faces and a day shaped around what each age needs most."
         />
 
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Desktop Grid */}
+        <ul className="mt-12 hidden md:grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {programs.map((p, i) => (
             <Reveal
               as="li"
@@ -780,6 +782,62 @@ function ProgramsSection() {
             </Reveal>
           ))}
         </ul>
+
+        {/* Mobile Carousel */}
+        <div className="md:hidden mt-8">
+          <Carousel
+            ariaLabel="Our Programs"
+            prevLabel="Previous program"
+            nextLabel="Next program"
+            showArrows={false}
+            showDots={true}
+            className="w-full"
+            listClassName="pb-6"
+            itemClassName="w-[85%] px-2.5 h-auto"
+          >
+            {programs.map((p) => (
+              <div
+                key={p.name}
+                className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-border/40 bg-card shadow-soft relative"
+              >
+                <Link to={getProgramPath(p.name)} className="overflow-hidden aspect-[4/3] w-full relative block">
+                  <img
+                    src={p.img}
+                    alt={`${p.name} children at LittleSteps Preschool`}
+                    width={768}
+                    height={768}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 left-4 rounded-full bg-background/95 border border-primary/20 px-3.5 py-1 text-xs font-extrabold text-primary shadow-sm">
+                    {p.age}
+                  </div>
+                </Link>
+
+                <div className="flex flex-1 flex-col p-6 relative">
+                  <h3 className="text-xl font-bold text-ink hover:text-primary transition-colors">
+                    <Link to={getProgramPath(p.name)}>{p.name}</Link>
+                  </h3>
+                  <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+                    {p.text}
+                  </p>
+
+                  <div className="mt-4 pt-4 border-t border-border/60 text-xs font-semibold text-muted-foreground space-y-1.5">
+                    <p><span className="text-ink font-bold">Focus:</span> {p.focus}</p>
+                    <p><span className="text-ink font-bold">Hours:</span> {p.hours}</p>
+                  </div>
+
+                  <Link
+                    to={getProgramPath(p.name)}
+                    className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-primary"
+                  >
+                    Explore Program →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </Carousel>
+        </div>
 
         {/* Compare Programs Tool */}
         <div className="mt-12 text-center">
@@ -965,32 +1023,39 @@ function OurDay() {
         </ol>
       </div>
 
-      {/* Vertical timeline for mobile */}
-      <ol className="relative mt-12 space-y-5 md:hidden pl-3">
-        <div
-          aria-hidden="true"
-          className="absolute left-7 top-4 bottom-4 w-0.5 bg-border"
-        />
-        {schedule.map((s, i) => (
-          <Reveal
-            as="li"
-            key={`m-${s.time}`}
-            delay={i * 60}
-            className="relative flex items-center gap-5 pl-0"
-          >
-            <span
-              className={`relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl ${s.tone} shadow-soft`}
-              aria-hidden="true"
-            >
-              <Illustration type={s.illustration} className="size-5.5" />
-            </span>
-            <div className="min-w-0 flex-1 rounded-[1.5rem] border border-border/55 bg-card p-4.5 shadow-soft">
-              <p className="font-display text-base font-extrabold text-ink">{s.time}</p>
-              <p className="text-sm font-bold text-muted-foreground mt-0.5">{s.label}</p>
+      {/* Horizontal timeline for mobile */}
+      <div className="mt-12 md:hidden">
+        <Carousel
+          ariaLabel="Daily Routine"
+          prevLabel="Previous activity"
+          nextLabel="Next activity"
+          showArrows={false}
+          showDots={true}
+          className="w-full"
+          listClassName="pb-6"
+          itemClassName="w-[75%] px-3 snap-start"
+        >
+          {schedule.map((s, idx) => (
+            <div key={`m-${s.time}`} className="relative flex items-center h-full">
+              <div className="w-full rounded-[2rem] border border-border/55 bg-card p-6 shadow-soft flex flex-col items-center text-center">
+                <span
+                  className={`grid size-14 place-items-center rounded-2xl ${s.tone} shadow-soft border-2 border-background`}
+                  aria-hidden="true"
+                >
+                  <Illustration type={s.illustration} className="size-6" />
+                </span>
+                <p className="mt-4 font-display text-lg font-extrabold text-ink">{s.time}</p>
+                <p className="mt-1 text-sm font-bold text-muted-foreground">{s.label}</p>
+              </div>
+              {idx < schedule.length - 1 && (
+                <div className="absolute top-1/2 -translate-y-1/2 -right-2 text-muted-foreground/45 text-2xl font-bold font-sans pointer-events-none select-none z-10">
+                  →
+                </div>
+              )}
             </div>
-          </Reveal>
-        ))}
-      </ol>
+          ))}
+        </Carousel>
+      </div>
     </section>
   );
 }
@@ -1542,12 +1607,19 @@ function GallerySection() {
       </div>
 
       {/* Gallery Grid */}
-      <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <Carousel
+        ariaLabel="Photo Gallery"
+        prevLabel="Previous gallery image"
+        nextLabel="Next gallery image"
+        className="mt-12 gallery-carousel"
+        listClassName="pb-6 px-4 md:px-[20%] scroll-smooth snap-x snap-mandatory"
+        itemClassName="w-[85%] sm:w-[48%] lg:w-[60%] snap-center px-3"
+      >
         {filteredGallery.map((g, i) => (
-          <li
+          <div
             key={g.alt}
             onClick={() => openLightbox(i)}
-            className="group relative cursor-pointer overflow-hidden rounded-[2rem] border border-border/30 shadow-soft list-none"
+            className="group relative cursor-pointer overflow-hidden rounded-[2rem] border border-border/30 shadow-soft list-none h-full gallery-carousel-item"
           >
             <Reveal delay={i * 60}>
               <div className="overflow-hidden aspect-[4/3] w-full">
@@ -1567,9 +1639,9 @@ function GallerySection() {
                 </span>
               </div>
             </Reveal>
-          </li>
+          </div>
         ))}
-      </ul>
+      </Carousel>
 
       {/* Modal Lightbox */}
       {lightboxIndex !== null && filteredGallery[lightboxIndex] ? (
@@ -1636,13 +1708,20 @@ function Testimonials() {
           eyebrow="Testimonials"
           title="Loved by Parents, Enjoyed by Little Learners"
         />
-        <ul className="mt-12 grid gap-6 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <Reveal
-              as="li"
+        <Carousel
+          ariaLabel="Parent Testimonials"
+          prevLabel="Previous testimonial"
+          nextLabel="Next testimonial"
+          autoplay={true}
+          autoplayInterval={6000}
+          className="mt-12"
+          listClassName="pb-6"
+          itemClassName="w-full md:w-1/2 lg:w-1/3 px-3 h-auto"
+        >
+          {testimonials.map((t) => (
+            <div
               key={t.name}
-              delay={i * 90}
-              className="rounded-[2rem] border border-border/40 bg-card p-7.5 shadow-soft hover:-translate-y-1 transition-all duration-350"
+              className="rounded-[2rem] border border-border/40 bg-card p-7.5 shadow-soft hover:-translate-y-1 transition-all duration-350 h-full flex flex-col justify-between"
             >
               <p className="text-base leading-relaxed text-muted-foreground italic">“{t.text}”</p>
               <div className="mt-6 flex items-center gap-3.5 border-t border-border/40 pt-5">
@@ -1657,9 +1736,9 @@ function Testimonials() {
                   <p className="truncate text-xs font-bold text-muted-foreground mt-0.5">{t.role}</p>
                 </div>
               </div>
-            </Reveal>
+            </div>
           ))}
-        </ul>
+        </Carousel>
       </div>
     </section>
   );

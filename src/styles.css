@@ -161,4 +161,58 @@
   }
 }
 
+/* Mobile/Tablet Gallery Carousel */
+@media (max-width: 768px) {
+  .gallery-list {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 16px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    scrollbar-width: none !important; /* Firefox */
+    -webkit-overflow-scrolling: touch !important; /* Smooth touch scroll iOS */
+  }
+
+  .gallery-list::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Opera */
+  }
+
+  .gallery-item {
+    flex: 0 0 82% !important;
+    max-width: 82% !important;
+    scroll-snap-align: start !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .gallery-list {
+    margin-left: -24px !important;
+    margin-right: -24px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none !important;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+/* Gallery Carousel Active Scaling */
+.gallery-carousel [data-active="false"] {
+  transform: scale(0.92);
+  opacity: 0.6;
+}
+.gallery-carousel [data-active="true"] {
+  transform: scale(1);
+  opacity: 1;
+}
+
 

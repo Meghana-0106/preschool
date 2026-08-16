@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { type ProgramData, programsData } from "@/data/programs/data";
 import { VisitBookingModal } from "./VisitBookingModal";
+import { Carousel } from "@/components/ui/carousel";
 
 export function ProgramDetailPage({ program }: { program: ProgramData }) {
   const [isVisitModalOpen, setIsVisitModalOpen] = useState(false);
@@ -386,11 +387,18 @@ export function ProgramDetailPage({ program }: { program: ProgramData }) {
             </p>
           </div>
 
-          <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
+          <Carousel
+            ariaLabel="Program Image Gallery"
+            prevLabel="Previous program image"
+            nextLabel="Next program image"
+            className="w-full max-w-2xl mx-auto"
+            listClassName="pb-6"
+            itemClassName="w-full px-2"
+          >
             {program.gallery.map((g, idx) => (
               <div 
                 key={idx} 
-                className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card shadow-soft aspect-square cursor-pointer"
+                className="group relative overflow-hidden rounded-[2rem] border border-border/80 bg-card shadow-soft aspect-[4/3] cursor-pointer"
                 onClick={() => setLightboxImage(g.src)}
               >
                 <img
@@ -400,11 +408,11 @@ export function ProgramDetailPage({ program }: { program: ProgramData }) {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-ink/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Maximize2 className="text-white size-5" />
+                  <Maximize2 className="text-white size-7" />
                 </div>
               </div>
             ))}
-          </div>
+          </Carousel>
         </div>
       </section>
 
